@@ -55,12 +55,22 @@ from utils.loss import ComputeLoss
 from utils.metrics import fitness
 from utils.plots import plot_evolve, plot_labels
 from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
+import notifyemail as notify
+
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
 RANK = int(os.getenv('RANK', -1))
 WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
+notify.Reboost(mail_host='smtp.163.com', #设置smtp电子邮件传输的协议类型
+mail_user='gzhgdou@163.com', # 设置发送者的邮箱（一般用作公共邮箱）
+mail_pass='JAKSLEURYALZEAQI', #发送者邮箱的授权码（在对应的邮箱获取）
+default_reciving_list=['gzhgdou@163.com'], # 设置接收者的邮箱
+log_root_path='log', #本地服务器中保存的log文件路径
+max_log_cnt=5 #本地只保存最新的5个log文件
+)
 
+notify.add_text("增加了解耦头的荔枝检测试验")
 def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictionary
     save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, noval, nosave, workers, freeze = \
         Path(opt.save_dir), opt.epochs, opt.batch_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
